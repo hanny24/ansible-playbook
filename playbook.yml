@@ -1,0 +1,254 @@
+---
+
+- hosts: localhost
+  name: packages
+  remote_user: hanny
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: install pacman packages
+      tags: packages
+      vars:
+        packages:
+          - firefox
+          - thunderbird
+          - networkmanager
+          - cinnamon
+          - lightdm
+          - lightdm-gtk-greeter
+          - fish
+          - fasd
+          - fzf
+          - terminator
+          - jdk8-openjdk
+          - jre8-openjdk
+          - curl
+          - git
+          - gitg
+          - scala
+          - gradle
+          - jq
+          - httpie
+          - htop
+          - iotop
+          - glances
+          - sudo
+          - keychain
+          - pygmentize
+          - atom
+          - docker
+          - neovim
+          - python-neovim
+          - ruby
+          - gcc-multilib
+          - clang
+          - cronie
+          - opensmtpd
+          - task
+          - lnav
+          - the_silver_searcher
+      become: true
+      pacman:
+        name: "{{packages}}"
+        state: present
+        update_cache: yes
+
+    - name: pip packages
+      pip:
+        name: bugwarrior
+        extra_args: '--user'
+
+    # - name: install aur packages
+    #   tags: packages
+    #   vars:
+    #     packages:
+    #       - git-crypt
+    #       - keepassxc
+    #       - bomi
+      # become: true
+
+- hosts: localhost
+  name: services
+  tags: services
+  tasks:
+    - name: Enable service
+      vars:
+        services:
+          - docker
+          - smtpd
+          - cronie
+      with_items: "{{ services }}"
+      systemd: state=started name={{ item }}
+
+- hosts: localhost
+  name: config
+  tags: config
+  vars:
+    aliases:
+      - name: undopush
+        target: "git push -f origin HEAD^:master"
+      - name: gd
+        target: "git diff"
+      - name: gdc
+        target: "git diff --cached"
+      - name: ga
+        target: "git add"
+      - name: gf
+        target: "git fetch"
+      - name: gca
+        target: "git commit -a -m"
+      - name: gcm
+        target: "git commit -m"
+      - name: gbd
+        target: "git branch -D"
+      - name: gm
+        target: "git merge --no-ff"
+      - name: gpt
+        target: "git push --tags"
+      - name: gp
+        target: "git push"
+      - name: gpl
+        target: 'git pull'
+      - name: grs
+        target: "git reset --soft"
+      - name: grh
+        target: "git reset --hard"
+      - name: gb
+        target: "git branch"
+      - name: gcob
+        target: "git checkout -b"
+      - name: gco
+        target: "git checkout"
+      - name: gba
+        target: "git branch -a"
+      - name: gcp
+        target: "git cherry-pick"
+      - name: gl
+        target: "git log"
+      - name: gs
+        target: 'git status'
+      - name: gst
+        target: 'git stash'
+      - name: gsp
+        target: 'git stash pop'
+
+      - name: t
+        target: 'task'
+      - name: tl
+        target: task list
+      - name: tll
+        target: task long
+      - name: ts
+        target: task start
+      - name: td
+        target: task done
+      - name: tc
+        target: task context
+
+      - name: manb
+        target: 'man --html=firefox'
+      - name: urldecode
+        target: 'python2 -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])"'
+      - name: urlencode
+        target: 'python2 -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])"'
+      - name: yank
+        target: 'yank -- xsel -b'
+      - name: gradle
+        target: './gradlew'
+      - name: ccat
+        target: 'pygmentize -g -O style=colorful,linenos=1'
+
+  pre_tasks:
+    - name: vim config
+      copy:
+        src: config/nvim
+        dest: ~/.config
+
+    - name: Fish config
+      copy:
+        src: fish
+        dest:  ~/.config
+
+    - name: Fish -- oh-my-fish -- install
+      shell: curl -L http://get.oh-my.fish > /tmp/install ; fish /tmp/install --noninteractive --yes
+      args:
+        creates: ~/.config/fish/conf.d/omf.fish
+
+    - name: Fish plugins
+      vars:
+        fish_plugins:
+          - bobthefish
+          - fzf
+          - gi
+          - balias
+          - kill-on-port
+          - mvn
+          - thefuck
+          - sudope
+          - keychain
+          - extract
+          - archlinux
+          - 'https://github.com/brgmnn/fish-docker-compose'
+      with_items: "{{ fish_plugins }}"
+      shell: fish -c 'omf install {{ item }}'
+
+    - name: Fish theme
+      shell: fish -c 'omf theme bobthefish'
+
+    - name: Fish aliases
+      with_items: "{{ aliases }}"
+      lineinfile:
+        dest: ~/.config/fish/aliases.fish
+        line: "balias {{ item.name }} '{{ item.target }}'"
+        create: yes
+
+    - name: bash aliases
+      with_items: "{{ aliases }}"
+      lineinfile:
+        dest: ~/.config/bash/aliases.sh
+        line: "alias {{ item.name }}='{{ item.target }}'"
+        create: yes
+
+    - name: taskwarrior rc file
+      vars:
+        options:
+          - 'uda.module.type=string'
+          - 'context.work=+work'
+          - 'context.other=+other'
+          - 'report.long.columns=id,start.active,entry,modified.age,depends,priority,project,module,tags,recur,wait.remaining,scheduled,due,until,description'
+          - 'report.long.labels=ID,A,Created,Mod,Deps,P,Project,Module,Tags,Recur,Wait,Sched,Due,Until,Description'
+          - 'report.completed.columns=id,uuid.short,entry,end,entry.age,depends,priority,project,module,tags,recur.indicator,due,description'
+          - 'report.completed.labels=ID,UUID,Created,Completed,Age,Deps,P,Project,Module,Tags,R,Due,Description'
+          - 'data.location=~/.task'
+      with_items: "{{ options }}"
+      lineinfile:
+        dest: ~/.taskrc
+        line: "{{ item }}"
+        create: yes
+
+    - name: idea vim rc file
+      lineinfile:
+        dest: ~/.ideavimrc
+        line: "set surround"
+        create: yes
+
+
+    - name: Fonts -- lcdfilter
+      lineinfile:
+        dest: ~/.Xresources
+        regexp: "^Xft.lcdfilter:"
+        line: "Xft.lcdfilter: lcddefault"
+        create: yes
+
+
+- hosts: localhost
+  name: cron
+  tags: cron
+  tasks:
+    - name: taskwarrior data commit & push
+      cron:
+        name: taskwarrior
+        hour: 10
+        minute: 0
+        user: hanny
+        job: 'cd /home/hanny/.task; git add *.data && git commit -m "automatic commit" && git push'
