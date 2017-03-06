@@ -144,7 +144,6 @@
         target: task done
       - name: tc
         target: task context
-
       - name: manb
         target: 'man --html=firefox'
       - name: urldecode
@@ -163,6 +162,34 @@
       copy:
         src: config/nvim
         dest: ~/.config
+
+    - name: idea vim rc file
+      copy:
+        src: config/ideavimrc
+        dest: ~/.ideavimrc
+
+    - name: vim mappings
+      vars:
+        mappings:
+          - 'map <leader>y "+'
+          - "nnoremap <A-j> :m .+1<CR>=="
+          - "nnoremap <A-k> :m .-2<CR>=="
+          - "inoremap <A-j> <Esc>:m .+1<CR>==gi"
+          - "inoremap <A-k> <Esc>:m .-2<CR>==gi"
+          - "vnoremap <A-j> :m '>+1<CR>gv=gv"
+          - "vnoremap <A-k> :m '<-2<CR>gv=gv"
+        files:
+          - "~/.ideavimrc"
+          - "~/.config/nvim/init.vim"
+
+      with_nested:
+        - "{{files}}"
+        - "{{mappings}}"
+
+      lineinfile:
+        dest: "{{item[0]}}"
+        line: "{{item[1]}}"
+        create: yes
 
     - name: Fish config
       copy:
@@ -226,13 +253,6 @@
         dest: ~/.taskrc
         line: "{{ item }}"
         create: yes
-
-    - name: idea vim rc file
-      lineinfile:
-        dest: ~/.ideavimrc
-        line: "set surround"
-        create: yes
-
 
     - name: Fonts -- lcdfilter
       lineinfile:

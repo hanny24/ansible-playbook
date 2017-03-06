@@ -73,7 +73,7 @@ let g:gitgutter_map_keys = 0
 let g:gitgutter_realtime = 0
 let updatetime = 750
 
-let g:NERDDefaultAlign = 'left' 
+let g:NERDDefaultAlign = 'left'
 
 " If you want to install not installed plugins on startup.
 "if dein#check_install()
@@ -90,5 +90,3 @@ set hidden
 
 let g:airline#extensions#tabline#enabled = 1
 
-" register with clipboard shortcut
-map <leader>y "+
