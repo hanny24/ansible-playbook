@@ -89,3 +89,6 @@ autocmd Filetype yaml setlocal ts=2 sts=0 sw=2 smarttab
 set hidden
 
 let g:airline#extensions#tabline#enabled = 1
+
+" register with clipboard shortcut
+map <leader>y "+
