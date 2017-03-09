@@ -47,6 +47,8 @@
           - task
           - lnav
           - the_silver_searcher
+          - mc
+          - redshift
       become: true
       pacman:
         name: "{{packages}}"
