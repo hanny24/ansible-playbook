@@ -49,6 +49,10 @@
           - the_silver_searcher
           - mc
           - redshift
+          - mitmproxy
+          - keychain
+          - shellcheck
+
       become: true
       pacman:
         name: "{{packages}}"
@@ -87,79 +91,156 @@
   tags: config
   vars:
     aliases:
-      - name: undopush
-        target: "git push -f origin HEAD^:master"
-      - name: gd
-        target: "git diff"
-      - name: gdc
-        target: "git diff --cached"
-      - name: ga
-        target: "git add"
-      - name: gf
-        target: "git fetch"
-      - name: gca
-        target: "git commit -a -m"
-      - name: gcm
-        target: "git commit -m"
-      - name: gbd
-        target: "git branch -D"
-      - name: gm
-        target: "git merge --no-ff"
-      - name: gpt
-        target: "git push --tags"
-      - name: gp
-        target: "git push"
-      - name: gpl
-        target: 'git pull'
-      - name: grs
-        target: "git reset --soft"
-      - name: grh
-        target: "git reset --hard"
-      - name: gb
-        target: "git branch"
-      - name: gcob
-        target: "git checkout -b"
-      - name: gco
-        target: "git checkout"
-      - name: gba
-        target: "git branch -a"
-      - name: gcp
-        target: "git cherry-pick"
-      - name: gl
-        target: "git log"
-      - name: gs
-        target: 'git status'
-      - name: gst
-        target: 'git stash'
-      - name: gsp
-        target: 'git stash pop'
+      undopush: "git push -f origin HEAD^:master"
+      gd: "git diff"
+      gdc: "git diff --cached"
+      ga: "git add"
+      gf: "git fetch"
+      gca: "git commit -a -m"
+      gcm: "git commit -m"
+      gbd: "git branch -D"
+      gm: "git merge --no-ff"
+      gpt: "git push --tags"
+      gp: "git push"
+      gpl: 'git pull'
+      grs: "git reset --soft"
+      grh: "git reset --hard"
+      gb: "git branch"
+      gcob: "git checkout -b"
+      gco: "git checkout"
+      gba: "git branch -a"
+      gcp: "git cherry-pick"
+      gl: "git log"
+      gs: 'git status'
+      gst: 'git stash'
+      gsp: 'git stash pop'
 
-      - name: t
-        target: 'task'
-      - name: tl
-        target: task list
-      - name: tll
-        target: task long
-      - name: ts
-        target: task start
-      - name: td
-        target: task done
-      - name: tc
-        target: task context
-      - name: manb
-        target: 'man --html=firefox'
-      - name: urldecode
-        target: 'python2 -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])"'
-      - name: urlencode
-        target: 'python2 -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])"'
-      - name: yank
-        target: 'yank -- xsel -b'
-      - name: gradle
-        target: './gradlew'
-      - name: ccat
-        target: 'pygmentize -g -O style=colorful,linenos=1'
+      t: task
+      tl: task list
+      tll: task long
+      ts: task start
+      td: task done
+      tc: task context
+      manb: 'man --html=firefox'
+      urldecode: 'python2 -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])"'
+      urlencode: 'python2 -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])"'
+      yank: 'yank -- xsel -b'
+      gradle: './gradlew'
+      ccat: 'pygmentize -g -O style=colorful,linenos=1'
+
+    paths:
+      - '$HOME/.rbenv/shims'
+      - '$HOME"/.bin"'
+      - '$HOME"/local/bin"'
+      - '/usr/local/bin'
+      - '/usr/bin'
+      - '/bin'
+      - '/usr/local/sbin'
+      - '/usr/sbin'
+      - '/sbin'
+      - '/usr/bin/vendor_perl'
+      - '/usr/bin/core_perl'
+      - '$HOME"/.gem/ruby/2.4.0/bin"'
+      - '$HOME/.local/bin'
+      - '$HOME/.cargo/bin'
+      - '$HOME/work/atlanta/atlanta-cluster-tools/bin'
+
+    env_variables:
+      RUST_SRC_PATH: '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src/'
+      TMPDIR: /tmp
+      EDITOR: nvim
+      M2_HOME: "/opt/maven"
+      _JAVA_OPTIONS: '-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true'
+      JAVA_HOME: /usr/lib/jvm/default
+      HOSTALIASES: ~/.hosts
 
   pre_tasks:
+    - name: Fish config
+      copy:
+        src: fish
+        dest:  ~/.config
+
+    - name: Fish -- oh-my-fish -- install
+      shell: curl -L http://get.oh-my.fish > /tmp/install ; fish /tmp/install --noninteractive --yes
+      args:
+        creates: ~/.config/fish/conf.d/omf.fish
+
+    - name: Fish plugins
+      vars:
+        fish_plugins:
+          - bobthefish
+          - fzf
+          - fasd
+          - gi
+          - balias
+          - kill-on-port
+          - mvn
+          - thefuck
+          - sudope
+          - keychain
+          - extract
+          - archlinux
+          - 'https://github.com/brgmnn/fish-docker-compose'
+
+      with_items: "{{ fish_plugins }}"
+      shell: fish -c 'omf install {{ item }}'
+
+    - name: Fish theme
+      shell: fish -c 'omf theme bobthefish'
+
+    - name: Fish aliases
+      with_dict: "{{ aliases }}"
+      lineinfile:
+        dest: ~/.config/fish/aliases.fish
+        line: "balias {{ item.key }} '{{ item.value }}'"
+        create: yes
+
+    - name: Fish paths
+      lineinfile:
+        dest: ~/.config/fish/config.fish
+        line: "set -x PATH {{ paths | join (' ') }}"
+        regexp: "^set -x PATH.*$"
+        create: yes
+
+    - name: Fish env variables
+      lineinfile:
+        dest: ~/.config/fish/variables.fish
+        line: "set -x {{item.key}} {{item.value}}"
+        create: yes
+      with_dict: "{{env_variables}}"
+
+    - name: bash base file
+      copy:
+        src: config/bashrc
+        dest: ~/.bashrc
+
+    - name: bash aliases
+      with_dict: "{{ aliases }}"
+      lineinfile:
+        dest: ~/.config/bash/aliases.sh
+        line: "alias {{ item.key }}='{{ item.value }}'"
+        create: yes
+
+    - name: bash paths
+      lineinfile:
+        dest: ~/.bashrc
+        line: "export PATH={{ paths | join (':') }}"
+        regexp: "^export PATH=.*$"
+        create: yes
+
+    - name: Fish env variables
+      lineinfile:
+        dest: ~/.config/bash/variables.sh
+        line: "export {{item.key}}={{item.value}}"
+        create: yes
+      with_dict: "{{env_variables}}"
+
+    - name: bash keychain
+      lineinfile:
+        dest: ~/.bashrc
+        line: "eval $(keychain --eval --quiet $HOME/.ssh/id_rsa)"
+        create: yes
+
     - name: vim config
       copy:
         src: config/nvim
@@ -192,52 +273,6 @@
       lineinfile:
         dest: "{{item[0]}}"
         line: "{{item[1]}}"
-        create: yes
-
-    - name: Fish config
-      copy:
-        src: fish
-        dest:  ~/.config
-
-    - name: Fish -- oh-my-fish -- install
-      shell: curl -L http://get.oh-my.fish > /tmp/install ; fish /tmp/install --noninteractive --yes
-      args:
-        creates: ~/.config/fish/conf.d/omf.fish
-
-    - name: Fish plugins
-      vars:
-        fish_plugins:
-          - bobthefish
-          - fzf
-          - fasd
-          - gi
-          - balias
-          - kill-on-port
-          - mvn
-          - thefuck
-          - sudope
-          - keychain
-          - extract
-          - archlinux
-          - 'https://github.com/brgmnn/fish-docker-compose'
-      with_items: "{{ fish_plugins }}"
-      shell: fish -c 'omf install {{ item }}'
-
-    - name: Fish theme
-      shell: fish -c 'omf theme bobthefish'
-
-    - name: Fish aliases
-      with_items: "{{ aliases }}"
-      lineinfile:
-        dest: ~/.config/fish/aliases.fish
-        line: "balias {{ item.name }} '{{ item.target }}'"
-        create: yes
-
-    - name: bash aliases
-      with_items: "{{ aliases }}"
-      lineinfile:
-        dest: ~/.config/bash/aliases.sh
-        line: "alias {{ item.name }}='{{ item.target }}'"
         create: yes
 
     - name: taskwarrior rc file

@@ -37,7 +37,9 @@ if dein#load_state('/home/hanny/.neovim')
   call dein#add('dag/vim-fish')
   call dein#add('vim-airline/vim-airline')
   call dein#add('tpope/vim-fugitive')
-
+  call dein#add('dhruvasagar/vim-table-mode')
+  call dein#add('rust-lang/rust.vim')
+  call dein#add('racer-rust/vim-racer')
 
   " Required:
   call dein#end()
@@ -91,3 +93,6 @@ set hidden
 
 let g:airline#extensions#tabline#enabled = 1
 
+" rust setting
+let g:racer_cmd = "/home/hanny/.cargo/bin/racer"
+let g:racer_experimental_completer = 1
