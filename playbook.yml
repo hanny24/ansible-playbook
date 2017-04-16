@@ -231,7 +231,7 @@
     - name: Fish env variables
       lineinfile:
         dest: ~/.config/bash/variables.sh
-        line: "export {{item.key}}={{item.value}}"
+        line: "export {{item.key}}='{{item.value}}'"
         create: yes
       with_dict: "{{env_variables}}"
 
