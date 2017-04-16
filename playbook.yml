@@ -205,7 +205,7 @@
     - name: Fish env variables
       lineinfile:
         dest: ~/.config/fish/variables.fish
-        line: "set -x {{item.key}} {{item.value}}"
+        line: "set -x {{item.key}} '{{item.value}}'"
         create: yes
       with_dict: "{{env_variables}}"
 
