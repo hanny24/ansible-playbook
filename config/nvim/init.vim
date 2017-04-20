@@ -40,6 +40,7 @@ if dein#load_state('/home/hanny/.neovim')
   call dein#add('dhruvasagar/vim-table-mode')
   call dein#add('rust-lang/rust.vim')
   call dein#add('racer-rust/vim-racer')
+  call dein#add('udalov/kotlin-vim')
 
   " Required:
   call dein#end()
