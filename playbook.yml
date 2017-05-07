@@ -8,6 +8,7 @@
   tags: packages
   tasks:
     - name: install pacman packages
+      tags: pacman
       vars:
         packages:
           - firefox
@@ -61,11 +62,13 @@
         update_cache: yes
 
     - name: pip packages
+      tags: pip
       pip:
         name: bugwarrior
         extra_args: '--user'
 
     - name: install aur packages
+      tags: aur
       vars:
         packages:
           - ammonite
