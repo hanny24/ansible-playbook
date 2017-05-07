@@ -11,55 +11,106 @@
       tags: pacman
       vars:
         packages:
-          - firefox
-          - thunderbird
-          - networkmanager
-          - cinnamon
-          - lightdm
-          - lightdm-gtk-greeter
-          - fish
-          - fasd
-          - fzf
-          - terminator
-          - jdk8-openjdk
-          - jre8-openjdk
-          - curl
-          - git
-          - gitg
-          - scala
-          - gradle
-          - jq
-          - httpie
-          - htop
-          - iotop
-          - glances
-          - sudo
-          - keychain
-          - pygmentize
+          - ansible
+          - arandr
           - atom
-          - docker
-          - neovim
-          - python-neovim
-          - ruby
-          - gcc-multilib
+          - baobab
+          - bind-tools
+          - calibre
+          - chromium
+          - cinnamon
           - clang
           - cronie
-          - opensmtpd
-          - task
-          - lnav
-          - the_silver_searcher
-          - mc
-          - redshift
-          - mitmproxy
-          - keychain
+          - curl
+          - deja-dup
+          - docker
+          - docker-compose
+          - doublecmd-gtk2
+          - eog
+          - evince
+          - fasd
+          - firefox
+          - fish
+          - flashplugin
+          - fzf
+          - gcc-multilib
+          - gdb
+          - gedit
+          - git
+          - gitg
+          - glances
+          - gnu-netcat
+          - gpa
+          - gparted
+          - gradle
+          - gthumb
+          - htop
+          - httpie
+          - iotop
+          - iperf
+          - iperf3
+          - iputils
+          - jdk8-openjdk
+          - jq
+          - jre8-openjdk
           - keepassxc
+          - keychain
+          - libreoffice-fresh-cs
+          - lightdm
+          - lightdm-gtk-greeter
+          - lldb
+          - lvm2
+          - maven
+          - mc
+          - mediainfo
+          - meld
+          - mitmproxy
+          - mlocate
+          - moreutils
+          - most
+          - mtpfs
+          - ncdu
+          - nemo-fileroller
+          - neovim
+          - networkmanager
+          - opensmtpd
+          - pinta
+          - pygmentize
+          - python-neovim
+          - qalculate-gtk
+          - redshift
+          - ruby
+          - rustup
+          - scala
           - shellcheck
-
+          - smartmontools
+          - smem
+          - socat
+          - sudo
+          - sysstat
+          - task
+          - terminator
+          - texlive-langextra
+          - texlive-science
+          - the_silver_searcher
+          - thefuck
+          - thunderbird
+          - thunderbird-i18n-cs
+          - time
+          - traceroute
+          - transmission-gtk
+          - virtualbox
+          - virtualbox-guest-dkms
+          - visualvm
+          - vlc
+          - whois
+          - xcursor-vanilla-dmz
+          - xdg-user-dirs-gtk
       become: true
       pacman:
         name: "{{packages}}"
         state: present
-        update_cache: yes
+        update_cache: no
 
     - name: pip packages
       tags: pip
@@ -76,15 +127,16 @@
           - clipit
           - cower
           - freerapid
+          - git-crypt
+          - git-extras
           - intellij-idea-ultimate-edition
           - java-jce_ustrength
           - jd-gui
           - jdk
-          - git-crypt
           - kupfer
           - lnav
-          - pdsh
           - pacaur
+          - pdsh
           - scalafmt
           - skype
           - slack-desktop
