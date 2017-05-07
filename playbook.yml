@@ -5,9 +5,9 @@
   remote_user: hanny
   become_user: root
   become_method: sudo
+  tags: packages
   tasks:
     - name: install pacman packages
-      tags: packages
       vars:
         packages:
           - firefox
@@ -51,6 +51,7 @@
           - redshift
           - mitmproxy
           - keychain
+          - keepassxc
           - shellcheck
 
       become: true
@@ -64,14 +65,29 @@
         name: bugwarrior
         extra_args: '--user'
 
-    # - name: install aur packages
-    #   tags: packages
-    #   vars:
-    #     packages:
-    #       - git-crypt
-    #       - keepassxc
-    #       - bomi
-      # become: true
+    - name: install aur packages
+      vars:
+        packages:
+          - ammonite
+          - bomi
+          - clipit
+          - cower
+          - freerapid
+          - intellij-idea-ultimate-edition
+          - java-jce_ustrength
+          - jd-gui
+          - jdk
+          - git-crypt
+          - kupfer
+          - lnav
+          - pdsh
+          - pacaur
+          - scalafmt
+          - skype
+          - slack-desktop
+      with_items: "{{ packages }}"
+      aur: "name={{item}} user=hanny dir=/home/hanny/.cache/pacaur"
+      become: true
 
 - hosts: localhost
   name: services
