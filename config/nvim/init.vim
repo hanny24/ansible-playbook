@@ -51,7 +51,8 @@ endif
 " Required:
 filetype plugin indent on
 syntax enable
-set number 
+set number
+set mouse=a
 
 nmap <leader>r :Tags<ENTER>
 nmap <leader>e :BTags<ENTER>
