@@ -99,3 +99,6 @@ let g:airline#extensions#tabline#enabled = 1
 " rust setting
 let g:racer_cmd = "/home/hanny/.cargo/bin/racer"
 let g:racer_experimental_completer = 1
+
+"wrap makdown files at 120 characters
+au BufRead,BufNewFile *.md setlocal textwidth=120
