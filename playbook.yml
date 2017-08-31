@@ -224,6 +224,7 @@
       _JAVA_OPTIONS: '-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true'
       JAVA_HOME: /usr/lib/jvm/default
       HOSTALIASES: ~/.hosts
+      TERM: xterm-color
 
   pre_tasks:
     - name: Fish config
