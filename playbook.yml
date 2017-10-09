@@ -186,6 +186,11 @@
       gst: 'git stash'
       gsp: 'git stash pop'
 
+      d: 'docker'
+      dc: 'docker-compose'
+      dcu: 'docker-compose up -d'
+      dcd: 'docker-compose down'
+
       t: task
       tl: task list
       tll: task long
