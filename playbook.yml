@@ -16,6 +16,7 @@
           - atom
           - baobab
           - bind-tools
+          - borg
           - calibre
           - chromium
           - cinnamon
@@ -76,6 +77,7 @@
           - opensmtpd
           - pinta
           - pygmentize
+          - python-llfuse # required by borg
           - python-neovim
           - qalculate-gtk
           - redshift
