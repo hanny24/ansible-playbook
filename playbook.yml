@@ -23,7 +23,6 @@
           - clang
           - cronie
           - curl
-          - deja-dup
           - docker
           - docker-compose
           - doublecmd-gtk2
@@ -247,18 +246,17 @@
     - name: Fish plugins
       vars:
         fish_plugins:
-          - bobthefish
-          - fzf
-          - fasd
-          - gi
+          - archlinux
           - balias
+          - bobthefish
+          - extract
+          - gi
+          - hash
+          - keychain
           - kill-on-port
           - mvn
-          - thefuck
           - sudope
-          - keychain
-          - extract
-          - archlinux
+          - thefuck
           - 'https://github.com/brgmnn/fish-docker-compose'
 
       with_items: "{{ fish_plugins }}"
