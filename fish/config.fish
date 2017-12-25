@@ -9,6 +9,5 @@ source ~/.config/fish/aliases.fish
 source ~/.config/fish/variables.fish
 source ~/.config/fish/functions/taskwarrior.fish
 
-# force fasd registration
-_run_fasd
+fzf_init
 
