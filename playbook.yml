@@ -375,7 +375,10 @@
         regexp: "^Xft.lcdfilter:"
         line: "Xft.lcdfilter: lcddefault"
         create: yes
-
+    - name: scripts
+      copy:
+        src: bin/
+        dest: ~/.bin
 
 - hosts: localhost
   name: cron
@@ -388,3 +391,10 @@
         minute: 0
         user: hanny
         job: 'cd /home/hanny/.task; git add *.data && git commit -m "automatic commit" && git push'
+    - name: borg backup
+      cron:
+        name: borg_backup
+        hour: 10
+        minute: 50
+        user: hanny
+        job: 'env DISPLAY=:0 gnome-terminal -- /home/hanny/.bin/backup.sh'
