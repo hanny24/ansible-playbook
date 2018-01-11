@@ -49,6 +49,7 @@ borg create                         \
     --exclude '/home/hanny/VirtualBox VMs' \
     --exclude '/home/hanny/.IntelliJIdea2017.3/system' \
     --exclude '/home/hanny/.gradle' \
+    --exclude '/home/hanny/.rustup' \
     ::'{hostname}-{now}'            \
     /home/hanny                     \
 
