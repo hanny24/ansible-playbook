@@ -50,6 +50,7 @@ borg create                         \
     --exclude '/home/hanny/.IntelliJIdea2017.3/system' \
     --exclude '/home/hanny/.gradle' \
     --exclude '/home/hanny/.rustup' \
+    --exclude '/home/hanny/.local/share/Trash/' \
     ::'{hostname}-{now}'            \
     /home/hanny                     \
 
