@@ -11,16 +11,18 @@ trap 'echo $( date ) Backup interrupted >&2; exit 2' INT TERM
 export BORG_REPO=/mnt/strnad/borg
 
 # Setting this, so you won't be asked for your repository passphrase:
-#export BORG_PASSPHRASE=$(zenity --password --title="Authentication for borg backup")
+export BORG_PASSPHRASE=$(python /home/hanny/.bin/pass.py get 'Borg backup')
 # or this to ask an external program to supply the passphrase:
-export BORG_PASSCOMMAND="zenity --password ${ZENITY_COMMON[@]} 2>/dev/null"
+#export BORG_PASSCOMMAND="zenity --password ${ZENITY_COMMON[@]} 2>/dev/null"
 
-info "Mounting target filesystem"
+if ! mount | grep 'files-users' > /dev/null; then
+    info "Mounting target filesystem"
 
-if ! /home/hanny/.bin/mount-files.sh; then
-    info "Failed to mount target filesystem"
-    gui_error "Failed to mount target filesystem"
-    exit 1
+    if ! /home/hanny/.bin/mount-files.sh; then
+        info "Failed to mount target filesystem"
+        gui_error "Failed to mount target filesystem"
+        exit 1
+    fi
 fi
 
 info "Starting backup"
