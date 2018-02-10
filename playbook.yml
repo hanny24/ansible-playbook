@@ -217,7 +217,7 @@
       - '/sbin'
       - '/usr/bin/vendor_perl'
       - '/usr/bin/core_perl'
-      - '$HOME"/.gem/ruby/2.4.0/bin"'
+      - '$HOME"/.gem/ruby/2.5.0/bin"'
       - '$HOME/.local/bin'
       - '$HOME/.cargo/bin'
       - '$HOME/work/atlanta/atlanta-cluster-tools/bin'
