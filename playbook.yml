@@ -75,6 +75,7 @@
           - networkmanager
           - opensmtpd
           - pinta
+          - powerline-fonts
           - pygmentize
           - python-llfuse # required by borg
           - python-neovim
